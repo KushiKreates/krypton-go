@@ -142,7 +142,7 @@ func (cli *KryptonCLI) createCacheDir() {
     }
     
     // Create subdirectories
-    directories := []string{"temp", "downloads", "uploads", "extractions"}
+    directories := []string{"loaders", "bootstrap"}
     for _, dir := range directories {
         dirPath := filepath.Join(cli.cacheDir, dir)
         if err := os.MkdirAll(dirPath, 0755); err != nil {
