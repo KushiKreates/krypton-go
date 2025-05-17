@@ -121,13 +121,11 @@ type AppState struct {
     WSBroadcast     chan WSMessage
     BootstrapDir    string
     Version         string
+    WebSocketManager *WebSocketManager
 }
 
 // WSMessage represents a WebSocket message
-type WSMessage struct {
-    Event string      `json:"event"`
-    Data  interface{} `json:"data"`
-}
+
 
 // Start initializes and starts the Krypton server
 func Start(version string) error {
@@ -138,6 +136,9 @@ func Start(version string) error {
     if err != nil {
         return fmt.Errorf("failed to initialize application: %v", err)
     }
+
+    // Initialize WebSocket manager
+    app.WebSocketManager = newWebSocketManager(app)
 
     // Start WebSocket broadcaster
     go app.runWSBroadcaster()
@@ -470,7 +471,6 @@ func createServer(app *AppState) gin.HandlerFunc {
     * Krypton-GO router
     * This file contains the router setup and API endpoints for the Krypton server.
     * All routes for the daemon are present here alr
-
 **/
 
 // setupRouter creates and configures the Gin router
@@ -492,8 +492,8 @@ func setupRouter(app *AppState) *gin.Engine {
         c.Next()
     })
 
-    // Set up WebSocket endpoint
-    configureWebsocketRouter(app, router)
+    // Set up WebSocket endpoint - using our new WebSocket manager
+    //router.GET("/ws", app.WebSocketManager.handleConnection)
 
     // Set up API endpoints
     api := router.Group("/api/v1")

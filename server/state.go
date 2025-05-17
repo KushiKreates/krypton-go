@@ -6,7 +6,9 @@ import (
     "runtime"
     "time"
 
-    "github.com/docker/docker/api/types"
+    _"github.com/docker/docker/api/types"
+    "github.com/docker/docker/api/types/container"
+   _ "github.com/docker/docker/api/types/filters"
     "github.com/gin-gonic/gin"
     "github.com/shirou/gopsutil/cpu"
     "github.com/shirou/gopsutil/host"
@@ -74,7 +76,14 @@ func configureStateRouter(app *AppState, router *gin.Engine) {
         }
 
         // Get container counts
-        containers, err := app.DockerClient.ContainerList(context.Background(), types.ContainerListOptions{All: true})
+        ctx := context.Background()
+        // Get all containers
+        listOptions := container.ListOptions{
+            All: true,
+        }
+        
+        
+        containers, err := app.DockerClient.ContainerList(ctx, listOptions)
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get container information"})
             return

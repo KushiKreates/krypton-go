@@ -1,5 +1,12 @@
 package main
 
+
+/**
+* Krypton Daemon in GO
+* A project by Nadhi.dev
+
+**/
+
 import (
     "fmt"
     "os"
